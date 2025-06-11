@@ -529,8 +529,8 @@ function App() {
   };
 
   useEffect(() => {
-    setMonthlyBalances(calculateMonthlyBalances());
-  }, [transactions]);
+    calculateMonthlyBalances();
+  }, [transactions, calculateMonthlyBalances]);
 
   const histogramData = {
     labels: monthlyBalances.map((balance) => balance.month),
