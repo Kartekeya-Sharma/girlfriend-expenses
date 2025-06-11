@@ -69,8 +69,11 @@ const CATEGORIES = [
   "Others",
 ];
 
-// Add this at the top of the file
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+// Update the API URL configuration
+const API_URL =
+  process.env.NODE_ENV === "production"
+    ? "/api" // In production, use relative path
+    : "http://localhost:5000/api"; // In development, use local server
 
 // Update the GlitterExplosion component
 const GlitterExplosion = () => {
@@ -138,51 +141,6 @@ const MinusExplosion = () => {
       ))}
     </div>
   );
-};
-
-// Add new animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-    },
-  },
-};
-
-const cardVariants = {
-  hover: {
-    scale: 1.02,
-    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
-    transition: {
-      duration: 0.3,
-    },
-  },
-};
-
-const buttonVariants = {
-  hover: {
-    scale: 1.05,
-    backgroundColor: "#FFC0CB",
-    transition: {
-      duration: 0.2,
-    },
-  },
-  tap: {
-    scale: 0.95,
-  },
 };
 
 function App() {
@@ -300,7 +258,7 @@ function App() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get(`${API_URL}/api/transactions`);
+      const response = await axios.get(`${API_URL}/transactions`);
       setTransactions(response.data);
     } catch (error) {
       console.error("Error fetching transactions:", error);
@@ -323,7 +281,7 @@ function App() {
     }
 
     try {
-      await axios.post(`${API_URL}/api/transactions`, {
+      await axios.post(`${API_URL}/transactions`, {
         ...formData,
         amount: parseFloat(formData.amount),
         date: new Date().toISOString(),
@@ -529,26 +487,9 @@ function App() {
   };
 
   useEffect(() => {
-    calculateMonthlyBalances();
-  }, [transactions, calculateMonthlyBalances]);
-
-  const histogramData = {
-    labels: monthlyBalances.map((balance) => balance.month),
-    datasets: [
-      {
-        label: "Income",
-        data: monthlyBalances.map((balance) => balance.totalIncome),
-        backgroundColor: "#4ECDC4",
-      },
-      {
-        label: "Savings",
-        data: monthlyBalances.map(
-          (balance) => balance.totalIncome - balance.totalExpenses
-        ),
-        backgroundColor: "#FFB6C1",
-      },
-    ],
-  };
+    const balances = calculateMonthlyBalances();
+    setMonthlyBalances(balances);
+  }, [transactions]);
 
   const monthlyPieData = (monthKey: string) => {
     const monthTransactions = transactions.filter((t) => {
