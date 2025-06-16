@@ -66,3 +66,14 @@ The application will be available at `http://localhost:3000`
   - Express
   - MongoDB
   - Mongoose
+
+## Deployment on Vercel
+
+1. Push your changes to GitHub.
+2. Log in to [Vercel](https://vercel.com/) and import your GitHub repository.
+3. Configure the following environment variables in Vercel:
+   - `MONGODB_URI`: Your MongoDB connection string.
+   - `PORT`: The port your server should run on (e.g., `5000`).
+4. Deploy your project on Vercel.
+
+The application will be available at the URL provided by Vercel.
